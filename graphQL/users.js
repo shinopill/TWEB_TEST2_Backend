@@ -7,7 +7,7 @@ const userSchema = buildSchema(`
     id: String!
     username: String!
     password: String!
-    Movies: [String]
+    watched: [String]
   }
   
   type Movie {

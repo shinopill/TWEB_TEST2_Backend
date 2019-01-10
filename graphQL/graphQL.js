@@ -4,14 +4,14 @@ const { UserModel, MovieModel, ObjectId } = require('../database/database');
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
   type User {
-    _id: String!
+    id: String!
     username: String!
     password: String!
-    Movies: [String]
+    watched: [String]
   }
   
   type Movie {
-    _id: String!
+    id: String!
     vote_count: Int!
     video: Boolean!
     vote_average: Int!

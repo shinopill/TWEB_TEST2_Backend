@@ -7,7 +7,7 @@ const watchlistSchema = buildSchema(`
     id: String!
     username: String!
     password: String!
-    movies: [String]
+    watched: [String]
   }
   
   type Movie {
@@ -39,19 +39,20 @@ const watchlistSchema = buildSchema(`
 const rootAlternative = {
   getWatchlist: ({ username}) => {
     return new Promise((resolve) => {
-      UserModel.findOne({username},{movies:1}).then(data => {
+      UserModel.findOne({username}).then(data => {
         if(data === null){
           return null;
           }
           else {
             const promises =[];
-            data.foreach(element => {
-              promises.push(MovieModel.findById(data));
+            const movies = data.watched
+            movies.forEach(element => {
+              promises.push(MovieModel.findOne({title :element}));
             })
             Promise.all(promises).then(data =>{
               let allMovies = []
               data.forEach(element =>{
-                allMovies = allMovies.push(element);
+                allMovies = allMovies.concat(element);
               })
               resolve(allMovies)
             })
@@ -67,11 +68,10 @@ const rootAlternative = {
         }else{
           const user = data;
           MovieModel.findOne({title}).then(dataMovie =>{
-            console.log(dataMovie)
-            movieId = dataMovie.id
-            UserModel.updateOne({username}, {$addToSet: {movies: movieId}})
-          }).then(res =>{
-            resolve(user);
+            movieId = dataMovie.title
+            UserModel.updateOne({username}, {$addToSet: {watched: title}}).then(res =>{
+              resolve(res);
+            })
           })
 
         }
